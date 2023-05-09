@@ -34,6 +34,30 @@ async function run() {
       const result = await coffeeCollection.find().toArray();
       res.send(result);
     })
+    app.get('/coffee/:id',async(req, res)=>{
+      const id = req.params.id;
+      const result = await coffeeCollection.findOne({ _id: new ObjectId(id) });
+      res.send(result);
+    })
+    app.put('/coffee/:id', async(req, res)=>{
+      const id = req.params.id;
+      const updatedCoffee = req.body;
+      const filter = {_id: new ObjectId(id)};
+      const options = { upsert: true };
+      const coffee = {
+        $set: {
+          name: updatedCoffee.name,
+          chef: updatedCoffee.chef,
+          category: updatedCoffee.category,
+          teste: updatedCoffee.teste,
+          details: updatedCoffee.details,
+          photoUrl: updatedCoffee.photoUrl,
+          supplier: updatedCoffee.supplier,
+        }
+      }
+      const result = await coffeeCollection.updateOne(filter, coffee, options);
+      res.send(result);
+    })
     app.delete('/coffee/:id',async(req, res)=>{
       const id = req.params.id;
       const result = await coffeeCollection.deleteOne({ _id: new ObjectId(id) });
